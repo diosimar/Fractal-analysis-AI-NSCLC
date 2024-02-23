@@ -1,0 +1,9 @@
+prettytable
+scikit-learn
+pandas 
+numpy
+scikit-survival
+matplotlib
+seaborn
+scipy
+yellowbrick
