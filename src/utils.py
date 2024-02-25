@@ -1,6 +1,7 @@
 # librerias necesarias 
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 
 
 ########## EDA Functions to use  #########
@@ -43,3 +44,32 @@ def plot_histogram_(data_frame, column_name, color_, bins=10, figsize=(20, 15)):
     plt.legend(loc='best')
     plt.grid(False)
     plt.show()
+
+def plot_frequency(data_frame, column_name):
+    """
+    Genera un gráfico de barras que muestra la frecuencia de valores en una columna específica.
+
+    Parameters:
+    - data_frame (pd.DataFrame): El DataFrame que contiene los datos.
+    - column_name (str): El nombre de la columna para la cual se generará el gráfico.
+
+    Returns:
+    - None: Muestra el histograma en la pantalla y  tabla con valores por categoria
+    """
+    # Contar y ordenar los valores
+    data_frame[column_name].value_counts().sort_values(inplace=True)
+
+    # Crear el gráfico
+    sns.countplot(x=column_name, data=data_frame)
+
+    # Personalizar el gráfico
+    plt.title(f'Frecuencia de {column_name}')
+    plt.xlabel(column_name)
+    plt.ylabel('Frecuencia')
+    plt.grid(False)
+
+    # Mostrar el gráfico
+    plt.show()
+
+    # Mostrar la cuenta de valores
+    print(data_frame[column_name].value_counts())
