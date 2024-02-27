@@ -60,6 +60,7 @@ plt.title('Varianza Acumulada Explicada por Componentes Principales')
 plt.grid(True)
 # Guardar la figura como un archivo JPG
 #plt.savefig('output/PCA-Clustering/varianza_acumulada_explicada.jpg')
+plt.close()
 
 ############################################################################################################
 ### escalar variables para obtener  la participación de  cada variable  sobre las componentes principales 
@@ -99,6 +100,7 @@ plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 plt.grid(True)
 # Guardar la figura como un archivo JPG
 #plt.savefig('output/PCA-Clustering/Loadings_Variables_CP1.jpg',  bbox_inches ='tight')
+plt.close()
 
 # Crear un biplot
 plt.figure(figsize=(10, 8))
@@ -117,8 +119,8 @@ plt.ylabel('PC2')
 plt.legend()
 plt.grid(True)
 # Guardar la figura como un archivo JPG
-#plt.savefig('output/PCA-Clustering/Bitplot.jpg')
-
+plt.savefig('output/PCA-Clustering/Bitplot.jpg')
+plt.close()
 ###### cunstrucción de  clusters por kmeans
 
 #_______________________________Clustering K-means___________________________________________#
@@ -128,6 +130,7 @@ kmeans = KMeans(random_state = 42)
 visu = KElbowVisualizer(kmeans, k = (2,20), locate_elbow=False, metrics = 'silhouette',timings=False)
 visu.fit(X_)
 visu.show( outpath = 'output/PCA-Clustering/ElbowPlot.png')#plt.savefig(f'output/PCA-Clustering/ElbowPlot.jpg', bbox_inches ='tight')
+plt.close()
 
 distorsions = []
 for k in range(2, 20):
@@ -135,11 +138,11 @@ for k in range(2, 20):
     kmeans.fit(X_ )
     distorsions.append(kmeans.inertia_)
 
-fig = plt.figure(figsize=(15, 5))
-plt.plot(range(2, 20), distorsions)
-plt.grid(True)
-plt.title('Elbow curve')
-plt.savefig(f'output/PCA-Clustering/ElbowPlot1.jpg', bbox_inches ='tight')
+#fig = plt.figure(figsize=(15, 5))
+#plt.plot(range(2, 20), distorsions)
+#plt.grid(True)
+#plt.title('Elbow curve')
+#plt.savefig(f'output/PCA-Clustering/ElbowPlot1.jpg', bbox_inches ='tight')
 
 
 #_______________
@@ -147,9 +150,11 @@ plt.savefig(f'output/PCA-Clustering/ElbowPlot1.jpg', bbox_inches ='tight')
 def plot_metric(K, scores, metric_name):
   plt.figure(dpi=110, figsize=(9, 5))
   plt.plot(K, scores, 'bx-')
-  plt.xticks(K); plt.xlabel('$k$', fontdict=dict(family = 'serif', size = 14));  plt.ylabel(metric_name, fontdict=dict(family = 'serif', size = 14));
+  plt.xticks(K); plt.xlabel('$k$', fontdict=dict(family = 'serif', size = 14))  
+  plt.ylabel(metric_name, fontdict=dict(family = 'serif', size = 14))
   plt.title(f'K vs {metric_name}', fontdict=dict(family = 'serif', size = 18))
   plt.savefig(f'output/PCA-Clustering/{metric_name}.jpg', bbox_inches ='tight')
+  plt.close()
   
 
 silhouette_scores = []
@@ -158,7 +163,7 @@ for k in K:
     km = KMeans(n_clusters = k, random_state = 42)
     silhouette_scores.append(silhouette_score(X_, km.fit_predict(X_)))
 
-plot_metric(K, silhouette_scores, 'silhouette_score ')
+#plot_metric(K, silhouette_scores, 'silhouette_score ')
 
 #_______________
 davies_score = []
@@ -167,4 +172,22 @@ for k in K:
     km = KMeans(n_clusters = k, random_state = 42)
     davies_score.append(davies_bouldin_score(X_, km.fit_predict(X_)))
 
-plot_metric(K, davies_score, 'davies_bouldin_score')
+#plot_metric(K, davies_score, 'davies_bouldin_score')
+
+#### formación de  agrupaciones con kmeans
+
+# Aplica K-Means
+k =3# Número de clusters
+kmeans = KMeans(n_clusters=k, random_state=42)
+labels = kmeans.fit_predict(X_.iloc[: , :6])
+
+# Visualiza los resultados
+plt.scatter(X_['Survival.time'], X_['F.analysis'], c=labels, cmap='viridis', marker='o', s=50)
+#plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], c='red', marker='X', s=200, label='Centroides')
+plt.title('Resultados de K-Means')
+plt.xlabel('Survival.time')
+plt.ylabel('F.analysis')
+plt.legend()
+plt.grid(True)
+plt.savefig(f'output/PCA-Clustering/kmeans.jpg', bbox_inches ='tight')
+plt.close()  
