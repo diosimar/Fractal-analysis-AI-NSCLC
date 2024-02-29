@@ -1,0 +1,8 @@
+Model,acc_score
+"Random Survival
+ Forest",0.5706269821907782
+"Gradient Boosting
+ Survival",0.6275920956330813
+"Componen twise 
+Gradient Boosting Survival",0.569895096364967
+Fast Survival SVM,0.5803854598682605

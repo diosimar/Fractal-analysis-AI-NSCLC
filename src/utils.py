@@ -8,6 +8,8 @@ from statsmodels.graphics.gofplots import qqplot
 from scipy.stats import shapiro, kstest
 import statsmodels
 
+
+from sksurv.metrics import cumulative_dynamic_auc , concordance_index_ipcw
 ########## EDA Functions to use  #########
 
 def manejo_tipo_dato(df_ ,cols_int , cols_float):
@@ -255,3 +257,34 @@ def corrdot(*args, **kwargs):
     font_size = abs(corr_r) * 40 + 5
     ax.annotate(corr_text, [.5, .5,],  xycoords="axes fraction",
                 ha='center', va='center', fontsize=font_size)        
+    
+def limpiar_estadios_clinicos(df):
+  '''
+    Genera transformaciones de procesamiento de datos  un dataset de variables especificadas.
+
+    Parameters:
+    - df : El DataFrame que contiene  los datos.
+        
+    Returns:
+    - df: DataFrame  de pandas  transformado
+    '''
+  df= df.copy()
+  df = df[~(df['clinical.T.Stage'] == 5)]
+  df = df[~(df['Clinical.N.Stage'] == 4)]
+  df = df[~(df['Clinical.M.Stage'] == 3)]
+  df = df.dropna(subset=['clinical.T.Stage', 'Histology'])
+  return df.reset_index(drop=True)
+
+
+
+def plot_cumulative_dynamic_auc(ytrain,ytest,times_,risk_score, label, color=None):
+    auc, mean_auc = cumulative_dynamic_auc(ytrain,ytest, risk_score, times_)
+
+    plt.plot(times_, auc, marker="o", color=color, label=label)
+    plt.xlabel("days from enrollment")
+    plt.ylabel("time-dependent AUC")
+    plt.axhline(mean_auc, color=color, linestyle="--")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f'output/Survival-analysis/time-dependent_AUC_variables.jpg', bbox_inches ='tight')
+    plt.close()  
